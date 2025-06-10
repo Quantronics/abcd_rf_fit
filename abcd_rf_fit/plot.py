@@ -1,10 +1,8 @@
-import matplotlib
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 
 from .utils import dB, deg, get_prefix
-
-# from .resonators import resonator_dict
 
 cm = 1 / 2.54  # centimeters in inches
 column_width = 12.4 * cm
@@ -112,7 +110,6 @@ def plot(
     style="Normal",
     title=None,
 ):
-
     if fit_params is not None and fit_params.edelay is not None:
         corrected_signal = signal * np.exp(-2j * np.pi * freq * fit_params.edelay)
         if fit is not None:
@@ -133,7 +130,6 @@ def plot(
     if style == "Normal":
         size = 10
         zorder = 1
-        # facecolors = 'C0'
         facecolors = "none"
     if style == "Leghtas":
         size = 10
@@ -141,14 +137,13 @@ def plot(
         facecolors = "none"
 
     if font_size is not None:
-        matplotlib.rcParams.update({"font.size": font_size})
+        mpl.rcParams.update({"font.size": font_size})
 
     freq_disp, freq_prefix = get_prefix(freq)
     if params is not None:
-        # params_label = params.str(latex=True, separator="\n", precision=precision, only_f_and_kappa=only_f_and_kappa)
         params_label = params.str(
             latex=True,
-            separator=", ",
+            separator="\n",
             precision=precision,
             only_f_and_kappa=only_f_and_kappa,
             red_warning=True,
@@ -156,10 +151,9 @@ def plot(
     else:
         params_label = None
     if fit_params is not None:
-        # fit_params_label = fit_params.str(latex=True, separator="\n", precision=precision, only_f_and_kappa=only_f_and_kappa)
         fit_params_label = fit_params.str(
             latex=True,
-            separator=", ",
+            separator="\n",
             precision=precision,
             only_f_and_kappa=only_f_and_kappa,
             red_warning=True,
@@ -243,20 +237,17 @@ def plot(
             center = 0.5 * (xlim[1] + xlim[0])
             delta = 0.5 * (xlim[1] - xlim[0])
             delta /= ratio
-            circle_ax.set_xlim(center - delta, center + delta)
-
-        # circle_ax.set_aspect("equal")
+            circle_ax.set_xlim(
+                center - delta, center + delta
+            )  # circle_ax.set_aspect("equal")
         circle_ax.grid(alpha=0.3)
 
     if plot_circle:
         mag_ax = fig.add_subplot(grid[0, 0])
     else:
         mag_ax = fig.add_subplot(grid[0, :])
-
     if title is not None:
-        mag_ax.set_title(title)
-
-    # mag_ax.plot(freq_disp, dB(signal), ".C0")
+        mag_ax.set_title(title)  # mag_ax.plot(freq_disp, dB(signal), ".C0")
     mag_ax.scatter(
         freq_disp,
         dB(signal),
@@ -264,19 +255,15 @@ def plot(
         facecolors=facecolors,
         edgecolors="C0",
         alpha=alpha_fit,
-        label=params_label,
     )
     if fit is not None:
         mag_ax.plot(freq_disp, dB(fit), "-C1", label=fit_params_label, zorder=zorder)
 
     if fit_params_label is not None:
-        mag_ax.legend(
-            bbox_to_anchor=(0.5 * (1 + width_ratios[1] / width_ratios[0]), 1),
-            loc="lower center",
-        )
+        mag_ax.legend(loc="upper right", framealpha=0.9)
 
     mag_ax.grid(alpha=0.3)
-    mag_ax.set_ylabel(r"$|%s|$ [dB]" % y_axis_str)
+    mag_ax.set_ylabel(rf"$|{y_axis_str}|$ [dB]")
     mag_ax.xaxis.set_ticklabels([])
 
     if plot_circle:
@@ -284,8 +271,9 @@ def plot(
     else:
         arg_ax = fig.add_subplot(grid[1, :])
 
-    if corrected_signal is None:
-        # arg_ax.plot(freq_disp, deg(signal), ".C0", label=params_label)
+    if (
+        corrected_signal is None
+    ):  # arg_ax.plot(freq_disp, deg(signal), ".C0", label=params_label)
         arg_ax.scatter(
             freq_disp,
             deg(signal),
@@ -293,7 +281,7 @@ def plot(
             facecolors=facecolors,
             edgecolors="C0",
             alpha=alpha_fit,
-        )  # , label=params_label)
+        )
         if fit is not None:
             arg_ax.plot(freq_disp, deg(fit), "-C1", zorder=zorder)
     else:
@@ -306,8 +294,7 @@ def plot(
                 facecolors=facecolors,
                 edgecolors="C0",
                 alpha=0.15 * alpha_fit,
-            )
-        # arg_ax.plot(freq_disp, deg(corrected_signal), ".C0", label=params_label)
+            )  # arg_ax.plot(freq_disp, deg(corrected_signal), ".C0", label=params_label)
         arg_ax.scatter(
             freq_disp,
             deg(corrected_signal),
@@ -315,7 +302,7 @@ def plot(
             facecolors=facecolors,
             edgecolors="C0",
             alpha=alpha_fit,
-        )  # , label=params_label)
+        )
         if fit is not None:
             if plot_not_corrected:
                 arg_ax.plot(freq_disp, deg(fit), "-C1", alpha=0.15, zorder=zorder)
@@ -337,11 +324,12 @@ def plot(
     # if params_label is not None:
     #     arg_ax.legend(bbox_to_anchor=(0, 0), loc='upper left')
     arg_ax.grid(alpha=0.3)
-    arg_ax.set_ylabel(r"$\arg(%s)$ [deg]" % y_axis_str)
-    arg_ax.set_xlabel("f [%sHz]" % freq_prefix)
+    arg_ax.set_ylabel(rf"$\arg({y_axis_str})$ [deg]")
+    arg_ax.set_xlabel(f"f [{freq_prefix}Hz]")
 
     fig.align_ylabels([mag_ax, arg_ax])
     if plot_circle:
         fig.align_xlabels([arg_ax, circle_ax])
-
     format_fig(fig)
+
+    return fig

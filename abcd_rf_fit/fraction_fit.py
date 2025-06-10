@@ -72,11 +72,11 @@ def fit_rational_fraction_polynomial_basis(x, y, n, den=None):
 def convergence_criteria(array, convergance_precision, min_converged_passes):
     array_convergence = np.diff(array) / array[:-1]
 
-    if np.prod(
-        np.abs(array_convergence[-min_converged_passes:]) < convergance_precision
-    ):
-        return True
-    return False
+    return bool(
+        np.prod(
+            np.abs(array_convergence[-min_converged_passes:]) < convergance_precision
+        )
+    )
 
 
 def iterative_solver(
@@ -187,7 +187,6 @@ def reflection_purcell(freq, f_a_0, f_b_0, kappa_a, kappa_b, g):
 
 
 if __name__ == "__main__":
-
     noise = 0.1
     n = 2
     x = np.linspace(-5, 10, 1001)
@@ -212,8 +211,6 @@ if __name__ == "__main__":
     better_solution = np.array(popt[: len(popt) // 2]) + 1j * np.array(
         popt[len(popt) // 2 :]
     )
-
-    print(popt)
 
     plt.figure()
     plt.plot(np.abs(coefs / coefs[0]), "oC0")
