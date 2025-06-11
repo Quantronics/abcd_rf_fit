@@ -488,7 +488,7 @@ def fit_signal(
     """
     if api_warning:
         warnings.warn(
-            "`fit_signal()` is deprecated. Use `analyze()` instead."
+            "`fit_signal()` is deprecated. Use `analyze()` instead.",
             DeprecationWarning,
             stacklevel=2,
         )
