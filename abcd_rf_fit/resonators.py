@@ -937,6 +937,12 @@ class ResonatorParams:
             if len(self.params) in [5, 7]:
                 self.edelay_index = -1
 
+    def __iter__(self):
+        return iter(self.params)
+
+    def __len__(self):
+        return len(self.params)
+
     def tolist(self):
         """Convert parameters to numpy array.
 
