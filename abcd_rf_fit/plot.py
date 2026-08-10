@@ -135,6 +135,10 @@ def plot(
         size = 10
         zorder = -10
         facecolors = "none"
+    if style == "Fine":
+        size = 1
+        zorder = 1
+        facecolors = "none"
 
     if font_size is not None:
         mpl.rcParams.update({"font.size": font_size})
